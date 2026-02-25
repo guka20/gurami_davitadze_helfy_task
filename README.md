@@ -25,7 +25,7 @@ cd frontend npm install npm run dev
 
 Explanation: - npm install installs frontend dependencies. - npm run dev
 starts the Vite React application (auto reload on changes). - Frontend
-runs on http://localhost:5173
+runs on http://localhost:3000
 
 ---
 

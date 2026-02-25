@@ -1,7 +1,4 @@
-const {
-  validateCreateTask,
-  validateUpdateTask,
-} = require("../middleware/middleware");
+const { validateCreateTask } = require("../middleware/middleware");
 
 let tasks = [];
 let nextId = 1;
@@ -16,18 +13,39 @@ const registerRoutes = (app) => {
   });
 
   app.post("/api/tasks", validateCreateTask, (req, res) => {
-    const { title, completed = false } = req.body;
+    const { title, completed = false, priority, description } = req.body;
     const task = {
       id: nextId++,
       title: title,
       completed,
+      priority: priority,
+      description: description,
       createdAt: new Date().toISOString(),
     };
 
     tasks.push(task);
     res.status(201).json({ data: task });
   });
+  app.put("/api/tasks/:id", (req, res) => {
+    const task = findTask(req.params.id);
 
+    if (!task) {
+      return res.status(404).json({
+        message: `Task with id ${req.params.id} not found`,
+      });
+    }
+
+    const { title, description, priority } = req.body;
+
+    if (title !== undefined) task.title = title;
+    if (description !== undefined) task.description = description;
+    if (priority !== undefined) task.priority = priority;
+
+    res.status(200).json({
+      message: "Task updated successfully",
+      data: task,
+    });
+  });
   app.delete("/api/tasks/:id", (req, res) => {
     const index = tasks.findIndex((t) => t.id === parseInt(req.params.id));
     if (index === -1) {

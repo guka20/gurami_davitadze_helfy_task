@@ -8,10 +8,13 @@ const applyMiddleware = (app) => {
 
 const validateTask = (body, requireAll = true) => {
   const errors = [];
-  const { title, completed } = body;
+  const { title, completed, priority } = body;
 
   if (requireAll && (title === undefined || title === null)) {
     errors.push("title is required");
+  }
+  if (priority !== "low" && priority !== "medium" && priority !== "high") {
+    errors.push("priority should be low, medium or high");
   }
   if (title !== undefined && typeof title !== "string") {
     errors.push("title must be a string");
@@ -53,6 +56,8 @@ const notFoundHandler = (req, res) => {
 };
 
 const errorHandler = (err, req, res, next) => {
+  console.log(err);
+
   res.status(500).json({ message: "Internal server error" });
 };
 
